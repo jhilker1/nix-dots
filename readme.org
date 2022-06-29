@@ -1,0 +1,3 @@
+#+title: Nix Dots
+
+My WIP Nixos Dots, grouped by machine.
