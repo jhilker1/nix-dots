@@ -1,3 +1,120 @@
 #+title: Nix Dots
+#+property: header-args:nix :tangle ~/.config/nixpkgs/home.nix
 
-My WIP Nixos Dots, grouped by machine.
+These are my NixOS dotfiles, grouped by machine, written with a literate programming forma tpowered by Emacs' Org-mode. Note that I am still /very/ new to Nix and NixOS.
+
+
+* Repo Organization
+The only real "global" folders is the =secrets/= folder, which contains files encrypted by git-crypt. Otherwise, each machine is contained in its own subfolder, with my user configuration being built from this README.
+** My Machines
+    - =nessus= : A NixOS virtual machine running inside VirtualBox.
+
+* Home Manager and User Specific Configuration
+I use =home-manager= to manage as many of my smaller dotfiles as I can (such as my git config, my zsh config, my shell prompt, etc.). while I use org-mode to power my larger config files, such as for my window manager (qtile). This first, global home-manager config contains any programs that don't require a lot of configuration to get going (such as ssh).
+
+#+begin_src nix
+{ config, pkgs, ... }: {
+  # Home Manager needs a bit of information about you and the
+  # paths it should manage.
+  home.username = "jhilker";
+  home.homeDirectory = "/home/jhilker";
+
+  # This value determines the Home Manager release that your
+  # configuration is compatible with. This helps avoid breakage
+  # when a new Home Manager release introduces backwards
+  # incompatible changes.
+  #
+  # You can update Home Manager without changing this value. See
+  # the Home Manager release notes for a list of state version
+  # changes in each release.
+  home.stateVersion = "22.05";
+
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
+
+  imports = [
+    ./packages.nix
+    ./git.nix
+  ];
+
+  home.sessionVariables = {
+    EDITOR = "nvim";
+  };
+
+  programs.zsh = {
+    enable = true;
+    enableSyntaxHighlighting = true;
+    enableAutosuggestions = true;
+  };
+
+  programs.starship = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    settings = {
+      line_break.disabled = true;
+    };
+  };
+
+  programs.gpg = {
+    enable = true;
+  };
+
+  programs.ssh = {
+    enable = true;
+  };
+
+  services.gpg-agent = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    enableSshSupport = true;
+    pinentryFlavor = "gtk2";
+  };
+
+
+
+}
+#+end_src
+
+** Packages
+Since I have a few specific packages to myself (namely emacs using [[github:doomemacs/doom-emacs][Doom Emacs]]), I want to quickly build my list of user-specific packages with its own file.
+#+begin_src nix :tangle ~/.config/nixpkgs/packages.nix
+{config, lib, pkgs, ...}: {
+  home.packages = with pkgs; [
+    emacs
+    # Doom Emacs Dependencies
+     binutils
+    (ripgrep.override { withPCRE2 = true; })
+    gnutls
+    fd
+    imagemagick
+    zstd
+    nodePackages.javascript-typescript-langserver
+    sqlite
+    editorconfig-core-c
+    emacs-all-the-icons-fonts
+  ];
+}
+#+end_src
+
+** Program Configuration
+*** Git
+One of the core things I use is git (obviously), and home-manager makes it so easy to set up my gitconfig.
+#+begin_src nix :tangle ~/.config/nixpkgs/git.nix
+{config, pkgs, ...}: {
+  programs.git = {
+    enable = true;
+    userName = "Jacob Hilker";
+    userEmail = "jacob.hilker2@gmail.com";
+    signing = {
+      key = "jacob.hilker2@gmail.com";
+      signByDefault = true;
+    };
+    extraConfig = {
+      init.defaultBranch = "main";
+    };
+  };
+
+}
+#+end_src
