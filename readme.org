@@ -72,6 +72,8 @@ I use =home-manager= to manage as many of my smaller dotfiles as I can (such as 
     pinentryFlavor = "gtk2";
   };
 
+  services.redshift.enable = true;
+
 
 
 }
