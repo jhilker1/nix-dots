@@ -1,4 +1,5 @@
 #+title: Nix Dots
+#+property: header-args :mkdirp yes
 #+property: header-args:nix :tangle ~/.config/nixpkgs/home.nix
 
 These are my NixOS dotfiles, grouped by machine, written with a literate programming forma tpowered by Emacs' Org-mode. Note that I am still /very/ new to Nix and NixOS.
@@ -9,9 +10,8 @@ The only real "global" folders is the =secrets/= folder, which contains files en
 ** My Machines
     - =nessus= : A NixOS virtual machine running inside VirtualBox.
 
-* Home Manager and User Specific Configuration
-I use =home-manager= to manage as many of my smaller dotfiles as I can (such as my git config, my zsh config, my shell prompt, etc.). while I use org-mode to power my larger config files, such as for my window manager (qtile). This first, global home-manager config contains any programs that don't require a lot of configuration to get going (such as ssh).
-
+* Home-Manager
+I use [[github:nix-community/home-manager][home-manager]] to manage as many of my smaller dotfiles as I can (such as my git config, my zsh config, my shell prompt, etc.). while I use org-mode to power my larger config files, such as for my window manager (qtile) or my main IDE of choice ([[github:doomemacs/doom-emacs][Doom Emacs]]). This first, global home-manager config contains any programs that don’t require a lot of configuration to get going (such as ssh).
 #+begin_src nix
 { config, pkgs, ... }: {
   # Home Manager needs a bit of information about you and the
@@ -33,7 +33,7 @@ I use =home-manager= to manage as many of my smaller dotfiles as I can (such as 
   programs.home-manager.enable = true;
 
   imports = [
-    ./packages.nix
+    ./editors/emacs.nix
     ./git.nix
   ];
 
@@ -81,11 +81,12 @@ I use =home-manager= to manage as many of my smaller dotfiles as I can (such as 
 
 
 }
-#+end_src
 
-** Packages
+#+end_src
+** Editors
+*** Doom Emacs
 Since I have a few specific packages to myself (namely emacs using [[github:doomemacs/doom-emacs][Doom Emacs]]), I want to quickly build my list of user-specific packages with its own file.
-#+begin_src nix :tangle ~/.config/nixpkgs/packages.nix
+#+begin_src nix :tangle ~/.config/nixpkgs/editors/emacs.nix
 {config, lib, pkgs, ...}: {
   home.packages = with pkgs; [
     emacs
@@ -104,8 +105,9 @@ Since I have a few specific packages to myself (namely emacs using [[github:doom
 }
 #+end_src
 
-** Program Configuration
-*** Git
+*** Neovim
+
+** Git
 One of the core things I use is git (obviously), and home-manager makes it so easy to set up my gitconfig.
 #+begin_src nix :tangle ~/.config/nixpkgs/git.nix
 {config, pkgs, ...}: {
