@@ -78,6 +78,13 @@ I use [[github:nix-community/home-manager][home-manager]] to manage as many of m
      provider = "geoclue2";
   };
 
+  services.dunst = {
+    enable = true;
+  };
+
+  services.picom = {
+    enable = true;
+  };
 
 
 }
