@@ -41,6 +41,7 @@
     xkbVariant = "";
     windowManager.qtile = {
       enable = true;
+      package = pkgs.callPackage ./desktop/qtile.nix {};
     };
   };
 
