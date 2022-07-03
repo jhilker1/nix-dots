@@ -39,7 +39,9 @@
     enable = true;
     layout = "us";
     xkbVariant = "";
-    windowManager.qtile.enable = true;
+    windowManager.qtile = {
+      enable = true;
+    };
   };
 
 
@@ -71,9 +73,9 @@
     (picom.overrideAttrs (_: {
       src = pkgs.fetchFromGitHub {
         repo = "picom";
-        owner = "yshui";
-        rev = "cd50596f0ed81c0aa28cefed62176bd6f050a1c6";
-        sha256 = "0lh3p3lkafkb2f0vqd5d99xr4wi47sgb57x65wa2cika8pz5sikv";
+        owner = "jonaburg";
+        rev = "e3c19cd7d1108d114552267f302548c113278d45";
+        sha256 = "4voCAYd0fzJHQjJo4x3RoWz5l3JJbRvgIXn1Kg6nz6Y=";
       };
     }))
     firefox
@@ -112,5 +114,6 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "22.05"; # Did you read the comment?
+
 
 }
